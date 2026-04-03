@@ -186,7 +186,7 @@
   </style>
 </head>
 <body>
-  <div id="portal-login-view" class="portal-login" role="main">
+  <div id="portal-login" class="portal-login" role="main" style="display:flex;">
     <div class="portal-login__card">
       <div class="portal-login__logo">
         <a href="/index.html" class="logo" aria-label="Zurruq Origins home">
@@ -219,7 +219,7 @@
     </div>
   </div>
 
-  <div id="portal-dashboard-view" hidden>
+  <div id="portal-dash" style="display:none;">
     <div class="scroll-progress"></div>
     <header class="site-header">
       <div class="container nav-container">
@@ -367,24 +367,12 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const loginView = document.getElementById('portal-login-view');
-    const dashboardView = document.getElementById('portal-dashboard-view');
     const loginError = document.getElementById('portal-login-error');
     const loginForm = document.getElementById('portal-login-form');
     const signInBtn = document.getElementById('portal-sign-in-btn');
     const signInBtnDefaultText = signInBtn ? signInBtn.textContent.trim() : 'Sign In';
 
     const UPDATE_DETAILS_MAILTO = 'mailto:info@zurruq.com?subject=Update%20Account%20Details';
-
-    function setSignOutVisible(visible) {
-      const display = visible ? 'block' : 'none';
-      const el = document.getElementById('signout-btn');
-      if (el) el.style.display = display;
-      const m = document.getElementById('signout-btn-mobile');
-      if (m) m.style.display = display;
-      const menu = document.getElementById('signout-btn-menu');
-      if (menu) menu.style.display = display;
-    }
 
     function configureDashboardNav(loggedIn) {
       document.querySelectorAll('a.portal-nav-cta').forEach(a => {
@@ -405,21 +393,31 @@
       });
     }
 
-    function showLoginView() {
-      loginView.hidden = false;
-      dashboardView.hidden = true;
-      document.body.style.background = '#0A1628';
+    function showLogin() {
+      document.getElementById('portal-login').style.display = 'flex';
+      document.getElementById('portal-dash').style.display = 'none';
+      document.getElementById('signout-btn').style.display = 'none';
       document.title = 'Client Portal | Zurruq Origins';
-      setSignOutVisible(false);
+
+      document.body.style.background = '#0A1628';
+      const signoutMobile = document.getElementById('signout-btn-mobile');
+      if (signoutMobile) signoutMobile.style.display = 'none';
+      const signoutMenu = document.getElementById('signout-btn-menu');
+      if (signoutMenu) signoutMenu.style.display = 'none';
       configureDashboardNav(false);
     }
 
-    function showDashboardView() {
-      loginView.hidden = true;
-      dashboardView.hidden = false;
-      document.body.style.background = '';
+    function showDashboard() {
+      document.getElementById('portal-login').style.display = 'none';
+      document.getElementById('portal-dash').style.display = 'block';
+      document.getElementById('signout-btn').style.display = 'block';
       document.title = 'My Dashboard | Zurruq Origins';
-      setSignOutVisible(true);
+
+      document.body.style.background = '';
+      const signoutMobile = document.getElementById('signout-btn-mobile');
+      if (signoutMobile) signoutMobile.style.display = 'block';
+      const signoutMenu = document.getElementById('signout-btn-menu');
+      if (signoutMenu) signoutMenu.style.display = 'block';
       configureDashboardNav(true);
     }
 
@@ -515,7 +513,7 @@
       container.innerHTML = (rows.join('') || '<p class="portal-empty">No details to display.</p>') + accountUpdateButton();
     }
 
-    async function loadDashboard(user) {
+    async function loadClientData(user) {
       const uid = user.uid;
       const welcomeEl = document.getElementById('portal-welcome');
       const ordersEl = document.getElementById('portal-orders-content');
@@ -636,7 +634,6 @@
     function handleSignOut() {
       auth.signOut().then(() => {
         alert('You have been signed out.');
-        window.location.href = '/index.html';
       });
     }
 
@@ -647,14 +644,13 @@
     bindSignOut(document.getElementById('signout-btn-mobile'));
     bindSignOut(document.getElementById('signout-btn-menu'));
 
-    setSignOutVisible(false);
-
-    auth.onAuthStateChanged(user => {
+    // Firebase Auth compat — same flow as modular onAuthStateChanged(auth, (user) => { ... })
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        showDashboardView();
-        loadDashboard(user);
+        showDashboard();
+        loadClientData(user);
       } else {
-        showLoginView();
+        showLogin();
         setLoginError('');
         resetSignInButton();
       }
