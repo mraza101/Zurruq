@@ -90,6 +90,26 @@
       padding: 0;
     }
     .portal-login__forgot:hover { color: var(--gold); }
+    .portal-login__back {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--navy);
+      text-decoration: none;
+      font-family: var(--font-body);
+    }
+    .portal-login__back:hover { color: var(--gold); }
+    .portal-reset-panel {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 0.5px solid var(--border);
+    }
+    .portal-reset-panel[hidden] { display: none !important; }
+    .portal-reset-msg { font-size: 13px; margin-top: 12px; min-height: 1.2em; }
+    .portal-reset-msg.is-success { color: var(--success); }
+    .portal-reset-msg.is-error { color: #b3261e; }
+    .portal-empty-actions { margin-top: 16px; }
     .portal-dash-main {
       padding-top: 160px;
       padding-bottom: 80px;
@@ -107,7 +127,7 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 24px;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
       .portal-dash__grid { grid-template-columns: 1fr; }
     }
     .portal-card {
@@ -186,9 +206,16 @@
           <label for="portal-password" class="form-label">Password</label>
           <input type="password" id="portal-password" class="form-control" required autocomplete="current-password">
         </div>
-        <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:24px;">Sign In</button>
-        <button type="button" class="portal-login__forgot" id="portal-forgot">Forgot password?</button>
+        <button type="submit" id="portal-sign-in-btn" class="btn btn-primary btn-lg" style="width:100%; margin-top:24px;">Sign In</button>
+        <button type="button" class="portal-login__forgot" id="portal-forgot-toggle" aria-expanded="false" aria-controls="portal-reset-panel">Forgot password?</button>
+        <div id="portal-reset-panel" class="portal-reset-panel" hidden>
+          <label for="portal-reset-email" class="form-label">Email for password reset</label>
+          <input type="email" id="portal-reset-email" class="form-control" placeholder="you@company.com" autocomplete="email">
+          <button type="button" id="portal-reset-submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:12px;">Send reset link</button>
+          <div id="portal-reset-msg" class="portal-reset-msg" role="status" aria-live="polite"></div>
+        </div>
       </form>
+      <a href="/index.html" class="portal-login__back">← Back to Website</a>
     </div>
   </div>
 
@@ -223,13 +250,13 @@
         </nav>
         <div class="nav-actions">
           <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
-          <a href="/portal.html" class="btn btn--portal">Client Portal</a>
-          <button type="button" class="btn-signout" id="portal-sign-out">Sign out</button>
+          <a href="/portal.html" class="btn btn--portal portal-nav-cta">Client Portal</a>
+          <button type="button" class="btn-signout" id="signout-btn">Sign out</button>
         </div>
         <div class="mobile-actions">
           <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
-          <a href="/portal.html" class="btn btn--portal mobile-only-btn">Client Portal</a>
-          <button type="button" class="btn-signout mobile-only-btn" id="portal-sign-out-mobile">Sign out</button>
+          <a href="/portal.html" class="btn btn--portal mobile-only-btn portal-nav-cta">Client Portal</a>
+          <button type="button" class="btn-signout mobile-only-btn" id="signout-btn-mobile">Sign out</button>
           <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
             <span></span><span></span><span></span>
           </button>
@@ -247,8 +274,8 @@
       <a href="/contact.html" class="nav-link">Contact</a>
       <div class="nav-actions-mobile">
         <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
-        <a href="/portal.html" class="btn btn--portal" style="width: 100%; text-align: center; margin-bottom: 12px;">Client Portal</a>
-        <button type="button" class="btn-signout" id="portal-sign-out-menu" style="width:100%;">Sign out</button>
+        <a href="/portal.html" class="btn btn--portal portal-nav-cta" style="width: 100%; text-align: center; margin-bottom: 12px;">Client Portal</a>
+        <button type="button" class="btn-signout" id="signout-btn-menu" style="width:100%;">Sign out</button>
       </div>
     </div>
 
@@ -344,17 +371,56 @@
     const dashboardView = document.getElementById('portal-dashboard-view');
     const loginError = document.getElementById('portal-login-error');
     const loginForm = document.getElementById('portal-login-form');
+    const signInBtn = document.getElementById('portal-sign-in-btn');
+    const signInBtnDefaultText = signInBtn ? signInBtn.textContent.trim() : 'Sign In';
+
+    const UPDATE_DETAILS_MAILTO = 'mailto:info@zurruq.com?subject=Update%20Account%20Details';
+
+    function setSignOutVisible(visible) {
+      const display = visible ? 'block' : 'none';
+      const el = document.getElementById('signout-btn');
+      if (el) el.style.display = display;
+      const m = document.getElementById('signout-btn-mobile');
+      if (m) m.style.display = display;
+      const menu = document.getElementById('signout-btn-menu');
+      if (menu) menu.style.display = display;
+    }
+
+    function configureDashboardNav(loggedIn) {
+      document.querySelectorAll('a.portal-nav-cta').forEach(a => {
+        a.replaceWith(a.cloneNode(true));
+      });
+      document.querySelectorAll('a.portal-nav-cta').forEach(a => {
+        if (loggedIn) {
+          a.textContent = 'My Dashboard';
+          a.setAttribute('href', '#');
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        } else {
+          a.textContent = 'Client Portal';
+          a.setAttribute('href', '/portal.html');
+        }
+      });
+    }
 
     function showLoginView() {
       loginView.hidden = false;
       dashboardView.hidden = true;
       document.body.style.background = '#0A1628';
+      document.title = 'Client Portal | Zurruq Origins';
+      setSignOutVisible(false);
+      configureDashboardNav(false);
     }
 
     function showDashboardView() {
       loginView.hidden = true;
       dashboardView.hidden = false;
       document.body.style.background = '';
+      document.title = 'My Dashboard | Zurruq Origins';
+      setSignOutVisible(true);
+      configureDashboardNav(true);
     }
 
     function setLoginError(msg) {
@@ -367,6 +433,16 @@
       loginError.classList.add('is-visible');
     }
 
+    function displayWelcomeName(profile, email) {
+      if (profile && profile.firstName && String(profile.firstName).trim()) {
+        return String(profile.firstName).trim();
+      }
+      if (!email) return 'there';
+      const local = email.split('@')[0] || '';
+      if (!local) return 'there';
+      return local.charAt(0).toUpperCase() + local.slice(1).toLowerCase();
+    }
+
     function formatDate(val) {
       if (!val) return '—';
       if (val.toDate) return val.toDate().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -374,9 +450,14 @@
       return String(val);
     }
 
+    function accountUpdateButton() {
+      return `<div class="portal-empty-actions"><a class="btn btn-secondary" href="${UPDATE_DETAILS_MAILTO}">Update My Details</a></div>`;
+    }
+
     function renderOrders(container, snap) {
       if (snap.empty) {
-        container.innerHTML = '<p class="portal-empty">No orders yet. When you place an order with us, it will show up here with status and invoice links.</p>';
+        container.innerHTML = `<p class="portal-empty">No orders yet. When you place an order with us, it will show up here with status and invoice links.</p>
+          <div class="portal-empty-actions"><a class="btn btn-primary" href="/contact.html">Contact Us to Place Your First Order</a></div>`;
         return;
       }
       const items = [];
@@ -395,7 +476,8 @@
 
     function renderDocuments(container, snap) {
       if (snap.empty) {
-        container.innerHTML = '<p class="portal-empty">No documents uploaded yet. COAs and certificates for your lots will appear here when they are ready.</p>';
+        container.innerHTML = `<p class="portal-empty">No documents uploaded yet. COAs and certificates for your lots will appear here when they are ready.</p>
+          <p class="portal-empty" style="margin-top:12px;">Documents will appear here after your first order is processed.</p>`;
         return;
       }
       const items = [];
@@ -414,10 +496,12 @@
 
     function renderAccount(container, data, fallbackEmail) {
       if (!data || (!data.company && !data.email && !data.phone && !data.firstName)) {
-        container.innerHTML = '<p class="portal-empty">We don\'t have a full profile on file yet. Your account is active — contact <a href="mailto:info@zurruq.com" class="portal-doc-link">info@zurruq.com</a> to update company and contact details.</p>';
+        let html = '<p class="portal-empty">We don\'t have a full profile on file yet. Your account is active — contact <a href="mailto:info@zurruq.com" class="portal-doc-link">info@zurruq.com</a> to update company and contact details.</p>';
         if (fallbackEmail) {
-          container.innerHTML += `<div class="portal-account-row" style="margin-top:12px;"><strong>Signed in as</strong> ${fallbackEmail}</div>`;
+          html += `<div class="portal-account-row" style="margin-top:12px;"><strong>Signed in as</strong> ${fallbackEmail}</div>`;
         }
+        html += accountUpdateButton();
+        container.innerHTML = html;
         return;
       }
       const rows = [];
@@ -428,7 +512,7 @@
         const name = [data.firstName, data.lastName].filter(Boolean).join(' ');
         rows.push(`<div class="portal-account-row"><strong>Name</strong> ${name}</div>`);
       }
-      container.innerHTML = rows.join('') || '<p class="portal-empty">No details to display.</p>';
+      container.innerHTML = (rows.join('') || '<p class="portal-empty">No details to display.</p>') + accountUpdateButton();
     }
 
     async function loadDashboard(user) {
@@ -448,8 +532,7 @@
         const clientSnap = await clientRef.get();
         profile = clientSnap.exists ? clientSnap.data() : null;
 
-        const first = profile && profile.firstName ? profile.firstName : (user.email ? user.email.split('@')[0] : 'there');
-        welcomeEl.textContent = `Welcome back, ${first}`;
+        welcomeEl.textContent = `Welcome back, ${displayWelcomeName(profile, user.email)}`;
 
         const [ordersSnap, docsSnap] = await Promise.all([
           clientRef.collection('orders').get(),
@@ -464,8 +547,14 @@
         ordersEl.innerHTML = '<p class="portal-empty">Could not load orders. Check Firestore rules and your connection.</p>';
         docsEl.innerHTML = '<p class="portal-empty">Could not load documents.</p>';
         accountEl.innerHTML = '<p class="portal-empty">Could not load account details.</p>';
-        welcomeEl.textContent = 'Welcome back';
+        welcomeEl.textContent = `Welcome back, ${displayWelcomeName(null, user.email)}`;
       }
+    }
+
+    function resetSignInButton() {
+      if (!signInBtn) return;
+      signInBtn.disabled = false;
+      signInBtn.textContent = signInBtnDefaultText;
     }
 
     loginForm.addEventListener('submit', async e => {
@@ -473,43 +562,92 @@
       setLoginError('');
       const email = document.getElementById('portal-email').value.trim();
       const password = document.getElementById('portal-password').value;
+      if (signInBtn) {
+        signInBtn.disabled = true;
+        signInBtn.textContent = 'Signing in...';
+      }
       try {
         await auth.signInWithEmailAndPassword(email, password);
+        resetSignInButton();
       } catch (err) {
+        resetSignInButton();
         const code = err.code || '';
-        if (code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'auth/invalid-credential' || code === 'auth/invalid-login-credentials') {
-          setLoginError('Incorrect email or password. Please try again.');
+        if (code === 'auth/wrong-password') {
+          setLoginError('Incorrect password. Please try again or reset your password.');
+        } else if (code === 'auth/user-not-found') {
+          setLoginError('No account found with that email address.');
+        } else if (code === 'auth/invalid-credential' || code === 'auth/invalid-login-credentials') {
+          setLoginError('Incorrect password. Please try again or reset your password.');
         } else if (code === 'auth/invalid-email') {
           setLoginError('Please enter a valid email address.');
         } else if (code === 'auth/too-many-requests') {
-          setLoginError('Too many attempts. Please wait and try again.');
+          setLoginError('Too many failed attempts. Please try again later.');
         } else {
-          setLoginError('Sign in failed. Please try again.');
+          setLoginError('Something went wrong. Please try again.');
         }
       }
     });
 
-    document.getElementById('portal-forgot').addEventListener('click', async () => {
-      const email = document.getElementById('portal-email').value.trim();
-      if (!email) {
-        setLoginError('Enter your email above, then click Forgot password again.');
-        return;
-      }
-      setLoginError('');
-      try {
-        await auth.sendPasswordResetEmail(email);
-        alert('If an account exists for that email, we\'ve sent password reset instructions.');
-      } catch (err) {
-        setLoginError('Could not send reset email. Check the address and try again.');
+    const forgotToggle = document.getElementById('portal-forgot-toggle');
+    const resetPanel = document.getElementById('portal-reset-panel');
+    const resetMsg = document.getElementById('portal-reset-msg');
+
+    forgotToggle.addEventListener('click', () => {
+      const open = resetPanel.hidden;
+      resetPanel.hidden = !open;
+      forgotToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        const re = document.getElementById('portal-reset-email');
+        const mainEmail = document.getElementById('portal-email').value.trim();
+        if (mainEmail) re.value = mainEmail;
+        re.focus();
+      } else {
+        resetMsg.textContent = '';
+        resetMsg.className = 'portal-reset-msg';
       }
     });
 
-    function bindSignOut(btn) {
-      if (btn) btn.addEventListener('click', () => auth.signOut());
+    document.getElementById('portal-reset-submit').addEventListener('click', async () => {
+      const email = document.getElementById('portal-reset-email').value.trim();
+      resetMsg.textContent = '';
+      resetMsg.className = 'portal-reset-msg';
+      if (!email) {
+        resetMsg.textContent = 'Please enter your email address.';
+        resetMsg.classList.add('is-error');
+        return;
+      }
+      try {
+        await auth.sendPasswordResetEmail(email);
+        resetMsg.textContent = 'Password reset email sent. Check your inbox.';
+        resetMsg.classList.add('is-success');
+      } catch (err) {
+        const code = err.code || '';
+        if (code === 'auth/user-not-found') {
+          resetMsg.textContent = 'No account found with that email address.';
+        } else if (code === 'auth/invalid-email') {
+          resetMsg.textContent = 'Please enter a valid email address.';
+        } else {
+          resetMsg.textContent = 'Something went wrong. Please try again.';
+        }
+        resetMsg.classList.add('is-error');
+      }
+    });
+
+    function handleSignOut() {
+      auth.signOut().then(() => {
+        alert('You have been signed out.');
+        window.location.href = '/index.html';
+      });
     }
-    bindSignOut(document.getElementById('portal-sign-out'));
-    bindSignOut(document.getElementById('portal-sign-out-mobile'));
-    bindSignOut(document.getElementById('portal-sign-out-menu'));
+
+    function bindSignOut(btn) {
+      if (btn) btn.addEventListener('click', handleSignOut);
+    }
+    bindSignOut(document.getElementById('signout-btn'));
+    bindSignOut(document.getElementById('signout-btn-mobile'));
+    bindSignOut(document.getElementById('signout-btn-menu'));
+
+    setSignOutVisible(false);
 
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -518,6 +656,7 @@
       } else {
         showLoginView();
         setLoginError('');
+        resetSignInButton();
       }
     });
   </script>
