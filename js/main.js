@@ -120,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateFields = () => {
       if (quoteFields) quoteFields.style.display = enquiryType.value === 'quote' ? 'block' : 'none';
       if (sampleFields) sampleFields.style.display = enquiryType.value === 'sample' ? 'block' : 'none';
+      const t = enquiryType.value;
+      enquiryType.style.borderColor = t === 'sample' || t === 'quote' ? 'var(--gold)' : '';
     };
     
     enquiryType.addEventListener('change', updateFields);

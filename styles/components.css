@@ -146,6 +146,15 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 .form-group.invalid .form-control { border-color: #d93025; }
 .form-group.invalid .form-error { display: block; }
 
+#contact-form .contact-form__submit {
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+#contact-form .contact-form__submit:disabled {
+  opacity: 0.88;
+  transform: none;
+  cursor: wait;
+}
+
 /* Scroll Progress */
 .scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--gold); z-index: 1000; transition: width 0.1s; }
 
