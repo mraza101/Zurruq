@@ -24,6 +24,12 @@
   <link rel="stylesheet" href="/styles/components.css">
   <link rel="stylesheet" href="/styles/animations.css">
   <style>
+    body.portal-page {
+      min-height: 100vh;
+    }
+    body.portal-page.portal-login-active {
+      background: #0A1628;
+    }
     .portal-login {
       min-height: 100vh;
       display: flex;
@@ -31,7 +37,7 @@
       align-items: center;
       justify-content: center;
       padding: 48px 24px;
-      background: #0A1628;
+      background: transparent;
     }
     .portal-login__card {
       width: 100%;
@@ -185,8 +191,8 @@
     .nav-actions .btn-signout { margin-left: 8px; }
   </style>
 </head>
-<body>
-  <div id="portal-login" class="portal-login" role="main" style="display:flex;">
+<body class="portal-page portal-login-active">
+  <div id="portal-login" class="portal-login" role="main" style="display:none;">
     <div class="portal-login__card">
       <div class="portal-login__logo">
         <a href="/index.html" class="logo" aria-label="Zurruq Origins home">
@@ -221,63 +227,61 @@
 
   <div id="portal-dash" style="display:none;">
     <div class="scroll-progress"></div>
-    <header class="site-header">
-      <div class="container nav-container">
-        <a href="/index.html" class="logo">
-          <span class="logo__primary">Zurruq</span>
-          <span class="logo__secondary">Origins</span>
-        </a>
-        <nav class="nav-links" aria-label="Main Navigation">
-          <div class="nav-item-dropdown">
-            <button class="nav-link dropdown-trigger" aria-expanded="false" aria-haspopup="menu" aria-controls="products-dropdown">
-              Products <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
-            <div class="dropdown-menu" id="products-dropdown" role="menu" aria-label="Products">
-              <a href="/cocoa.html" class="dropdown-card" role="menuitem">
-                <h4>Ghana Natural Cocoa</h4>
-                <p>Non-alkalized, 10-12% fat, food-grade.</p>
-              </a>
-              <a href="/coffee.html" class="dropdown-card" role="menuitem">
-                <h4>Ghana Single-Origin Coffee</h4>
-                <p>Green & roasted. Washed & natural.</p>
-              </a>
-            </div>
-          </div>
-          <a href="/sourcing.html" class="nav-link">Sourcing</a>
-          <a href="/about.html" class="nav-link">About</a>
-          <a href="/wholesale.html" class="nav-link">Wholesale</a>
-          <a href="/contact.html" class="nav-link">Contact</a>
-        </nav>
-        <div class="nav-actions">
-          <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
-          <a href="/portal.html" class="btn btn--portal portal-nav-cta">Client Portal</a>
-          <button type="button" class="btn-signout" id="signout-btn">Sign out</button>
-        </div>
-        <div class="mobile-actions">
-          <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
-          <a href="/portal.html" class="btn btn--portal mobile-only-btn portal-nav-cta">Client Portal</a>
-          <button type="button" class="btn-signout mobile-only-btn" id="signout-btn-mobile">Sign out</button>
-          <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
-            <span></span><span></span><span></span>
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/index.html" class="logo">
+        <span class="logo__primary">Zurruq</span>
+        <span class="logo__secondary">Origins</span>
+      </a>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <div class="nav-item-dropdown">
+          <button class="nav-link dropdown-trigger" aria-expanded="false" aria-haspopup="menu" aria-controls="products-dropdown">
+            Products <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
+          <div class="dropdown-menu" id="products-dropdown" role="menu" aria-label="Products">
+            <a href="/cocoa.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Natural Cocoa</h4>
+              <p>Non-alkalized, 10-12% fat, food-grade.</p>
+            </a>
+            <a href="/coffee.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Single-Origin Coffee</h4>
+              <p>Green & roasted. Washed & natural.</p>
+            </a>
+          </div>
         </div>
+        <a href="/sourcing.html" class="nav-link">Sourcing</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/wholesale.html" class="nav-link">Wholesale</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
+        <a href="/portal.html" class="btn btn--portal portal-nav-cta">Client Portal</a>
+        <button type="button" class="btn-signout" id="signout-btn" style="display:none;">Sign Out</button>
       </div>
-    </header>
-
-    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-      <a href="/index.html" class="nav-link">Home</a>
-      <a href="/cocoa.html" class="nav-link">Cocoa Powder</a>
-      <a href="/coffee.html" class="nav-link">Single-Origin Coffee</a>
-      <a href="/sourcing.html" class="nav-link">Sourcing</a>
-      <a href="/about.html" class="nav-link">About</a>
-      <a href="/wholesale.html" class="nav-link">Wholesale</a>
-      <a href="/contact.html" class="nav-link">Contact</a>
-      <div class="nav-actions-mobile">
-        <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
-        <a href="/portal.html" class="btn btn--portal portal-nav-cta" style="width: 100%; text-align: center; margin-bottom: 12px;">Client Portal</a>
-        <button type="button" class="btn-signout" id="signout-btn-menu" style="width:100%;">Sign out</button>
+      <div class="mobile-actions">
+        <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
+        <a href="/portal.html" class="btn btn--portal mobile-only-btn portal-nav-cta">Client Portal</a>
+        <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
+  </header>
+  
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <a href="/index.html" class="nav-link">Home</a>
+    <a href="/cocoa.html" class="nav-link">Cocoa Powder</a>
+    <a href="/coffee.html" class="nav-link">Single-Origin Coffee</a>
+    <a href="/sourcing.html" class="nav-link">Sourcing</a>
+    <a href="/about.html" class="nav-link">About</a>
+    <a href="/wholesale.html" class="nav-link">Wholesale</a>
+    <a href="/contact.html" class="nav-link">Contact</a>
+    <div class="nav-actions-mobile">
+      <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
+      <a href="/portal.html" class="btn btn--portal portal-nav-cta" style="width: 100%; text-align: center;">Client Portal</a>
+    </div>
+  </div>
 
     <main class="portal-dash-main">
       <div class="container">
@@ -294,7 +298,7 @@
           <section class="portal-card" aria-labelledby="portal-reorder-heading">
             <h2 id="portal-reorder-heading">Request Reorder</h2>
             <p class="portal-empty" style="margin-bottom:16px;">Need another delivery? Send us a reorder request and our team will confirm availability and pricing.</p>
-            <a class="btn btn-primary" id="portal-reorder-btn" href="mailto:info@zurruq.com?subject=Reorder%20Request%20%E2%80%94%20Zurruq%20Origins&amp;body=Please%20include%20your%20company%20name%2C%20product%2C%20and%20approximate%20quantity.">Email reorder request</a>
+            <a class="btn btn-primary" id="portal-reorder-btn" href="mailto:info@zurruq.com?subject=Reorder%20Request&amp;body=Hi%20Zurruq%20Origins%2C%20I%20would%20like%20to%20request%20a%20reorder.">Email Reorder Request</a>
           </section>
           <section class="portal-card" aria-labelledby="portal-account-heading">
             <h2 id="portal-account-heading">Account Details</h2>
@@ -304,50 +308,50 @@
       </div>
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <div class="footer-grid">
-          <div class="footer-col">
-            <a href="/index.html" class="footer-logo">Zurruq Origins</a>
-            <p style="color:rgba(255,255,255,0.65); max-width:280px; font-size:14px;">West African excellence. Australian precision. Premium Ghana-origin cocoa and coffee imported directly to Melbourne.</p>
-          </div>
-          <div class="footer-col">
-            <h4>Products</h4>
-            <ul class="footer-links">
-              <li><a href="/cocoa.html">Natural Cocoa Powder</a></li>
-              <li><a href="/coffee.html">Single-Origin Coffee</a></li>
-              <li><a href="/qa-pack.html">Request QA Pack</a></li>
-              <li><a href="/contact.html?type=sample">Request Sample</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Company</h4>
-            <ul class="footer-links">
-              <li><a href="/about.html">About Us</a></li>
-              <li><a href="/sourcing.html">Sourcing</a></li>
-              <li><a href="/wholesale.html">Wholesale</a></li>
-              <li><a href="/logistics.html">Logistics & Freight</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Contact</h4>
-            <ul class="footer-links">
-              <li><a href="mailto:info@zurruq.com">info@zurruq.com</a></li>
-              <li><a href="tel:+61480242900">+61 480 242 900</a></li>
-              <li><span style="color:rgba(255,255,255,0.65); font-size:14px;">Tullamarine, VIC 3043<br>Australia</span></li>
-            </ul>
-          </div>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="/index.html" class="footer-logo">Zurruq Origins</a>
+          <p style="color:rgba(255,255,255,0.65); max-width:280px; font-size:14px;">West African excellence. Australian precision. Premium Ghana-origin cocoa and coffee imported directly to Melbourne.</p>
         </div>
-        <div class="footer-bottom">
-          <p>&copy; 2026 Zurruq Origins Pty Ltd. All rights reserved.</p>
-          <div class="footer-badges">
-            <span>HACCP Compliant</span>
-            <span>COCOBOD Licensed</span>
-            <span>Melbourne Stocked</span>
-          </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul class="footer-links">
+            <li><a href="/cocoa.html">Natural Cocoa Powder</a></li>
+            <li><a href="/coffee.html">Single-Origin Coffee</a></li>
+            <li><a href="/qa-pack.html">Request QA Pack</a></li>
+            <li><a href="/contact.html?type=sample">Request Sample</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/sourcing.html">Sourcing</a></li>
+            <li><a href="/wholesale.html">Wholesale</a></li>
+            <li><a href="/logistics.html">Logistics & Freight</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:info@zurruq.com">info@zurruq.com</a></li>
+            <li><a href="tel:+61480242900">+61 480 242 900</a></li>
+            <li><span style="color:rgba(255,255,255,0.65); font-size:14px;">Tullamarine, VIC 3043<br>Australia</span></li>
+          </ul>
         </div>
       </div>
-    </footer>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Zurruq Origins. All rights reserved.</p>
+        <div class="footer-badges">
+          <span>HACCP Compliant</span>
+          <span>COCOBOD Licensed</span>
+          <span>Melbourne Stocked</span>
+        </div>
+      </div>
+    </div>
+  </footer>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -398,12 +402,7 @@
       document.getElementById('portal-dash').style.display = 'none';
       document.getElementById('signout-btn').style.display = 'none';
       document.title = 'Client Portal | Zurruq Origins';
-
-      document.body.style.background = '#0A1628';
-      const signoutMobile = document.getElementById('signout-btn-mobile');
-      if (signoutMobile) signoutMobile.style.display = 'none';
-      const signoutMenu = document.getElementById('signout-btn-menu');
-      if (signoutMenu) signoutMenu.style.display = 'none';
+      document.body.classList.add('portal-login-active');
       configureDashboardNav(false);
     }
 
@@ -412,12 +411,7 @@
       document.getElementById('portal-dash').style.display = 'block';
       document.getElementById('signout-btn').style.display = 'block';
       document.title = 'My Dashboard | Zurruq Origins';
-
-      document.body.style.background = '';
-      const signoutMobile = document.getElementById('signout-btn-mobile');
-      if (signoutMobile) signoutMobile.style.display = 'block';
-      const signoutMenu = document.getElementById('signout-btn-menu');
-      if (signoutMenu) signoutMenu.style.display = 'block';
+      document.body.classList.remove('portal-login-active');
       configureDashboardNav(true);
     }
 
@@ -455,7 +449,7 @@
     function renderOrders(container, snap) {
       if (snap.empty) {
         container.innerHTML = `<p class="portal-empty">No orders yet. When you place an order with us, it will show up here with status and invoice links.</p>
-          <div class="portal-empty-actions"><a class="btn btn-primary" href="/contact.html">Contact Us to Place Your First Order</a></div>`;
+          <div class="portal-empty-actions"><a class="btn btn-primary" href="/contact.html?type=quote">Contact Us to Place Your First Order</a></div>`;
         return;
       }
       const items = [];
@@ -633,16 +627,12 @@
 
     function handleSignOut() {
       auth.signOut().then(() => {
-        alert('You have been signed out.');
+        window.location.href = '/index.html';
       });
     }
 
-    function bindSignOut(btn) {
-      if (btn) btn.addEventListener('click', handleSignOut);
-    }
-    bindSignOut(document.getElementById('signout-btn'));
-    bindSignOut(document.getElementById('signout-btn-mobile'));
-    bindSignOut(document.getElementById('signout-btn-menu'));
+    const signoutBtn = document.getElementById('signout-btn');
+    if (signoutBtn) signoutBtn.addEventListener('click', handleSignOut);
 
     // Firebase Auth compat — same flow as modular onAuthStateChanged(auth, (user) => { ... })
     auth.onAuthStateChanged((user) => {
