@@ -123,7 +123,37 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     enquiryType.addEventListener('change', updateFields);
-    updateFields(); // Initial run  }
+    updateFields();
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+
+      const formData = new FormData(contactForm);
+
+      try {
+        const response = await fetch('https://formspree.io/f/xbdpzrgo', {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          window.location.href = '/thankyou.html';
+        } else {
+          submitBtn.textContent = 'Send Enquiry →';
+          submitBtn.disabled = false;
+          alert('Something went wrong. Please try again.');
+        }
+      } catch (error) {
+        submitBtn.textContent = 'Send Enquiry →';
+        submitBtn.disabled = false;
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  }
 
   // 7. Intersection Observer for fade-in animations on scroll
   const fadeElements = document.querySelectorAll('.fade-up');
