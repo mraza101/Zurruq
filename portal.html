@@ -1,0 +1,526 @@
+<!--
+  FIRESTORE SECURITY RULES — add these in Firebase Console → Firestore → Rules:
+
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /clients/{userId}/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+
+  Note: If reads to the client profile document `clients/{userId}` fail, add an explicit rule for that path
+  or confirm recursive wildcard coverage for your Firebase rules version.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal | Zurruq Origins</title>
+  <meta name="description" content="Sign in to the Zurruq Origins client portal for orders, QA documents, and account details.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <link rel="stylesheet" href="/styles/components.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+  <style>
+    .portal-login {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      background: #0A1628;
+    }
+    .portal-login__card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      border: 0.5px solid var(--border);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+    }
+    .portal-login__logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .portal-login__logo a {
+      text-decoration: none;
+    }
+    .portal-login__title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      color: var(--navy);
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .portal-login__sub {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .portal-login__error {
+      display: none;
+      background: rgba(217, 48, 37, 0.08);
+      border: 0.5px solid rgba(217, 48, 37, 0.35);
+      color: #b3261e;
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+    }
+    .portal-login__error.is-visible { display: block; }
+    .portal-login__forgot {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--navy);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      padding: 0;
+    }
+    .portal-login__forgot:hover { color: var(--gold); }
+    .portal-dash-main {
+      padding-top: 160px;
+      padding-bottom: 80px;
+      background: var(--cream);
+      min-height: 60vh;
+    }
+    .portal-dash__welcome {
+      font-family: var(--font-heading);
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      color: var(--navy);
+      margin-bottom: 32px;
+    }
+    .portal-dash__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .portal-dash__grid { grid-template-columns: 1fr; }
+    }
+    .portal-card {
+      background: var(--white);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    }
+    .portal-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      color: var(--navy);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .portal-empty {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .portal-list { list-style: none; margin: 0; padding: 0; }
+    .portal-list li {
+      font-size: 14px;
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--body);
+    }
+    .portal-list li:last-child { border-bottom: none; }
+    .portal-list__meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .portal-doc-link {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .portal-doc-link:hover { text-decoration: underline; }
+    .portal-account-row { margin-bottom: 10px; font-size: 14px; }
+    .portal-account-row strong { color: var(--navy); display: inline-block; min-width: 120px; }
+    .btn-signout {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0 20px;
+      height: 44px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--navy);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-signout:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-actions .btn-signout { margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <div id="portal-login-view" class="portal-login" role="main">
+    <div class="portal-login__card">
+      <div class="portal-login__logo">
+        <a href="/index.html" class="logo" aria-label="Zurruq Origins home">
+          <span class="logo__primary">Zurruq</span>
+          <span class="logo__secondary">Origins</span>
+        </a>
+      </div>
+      <h1 class="portal-login__title">Client Portal</h1>
+      <p class="portal-login__sub">Sign in to access your orders and documents</p>
+      <div id="portal-login-error" class="portal-login__error" role="alert"></div>
+      <form id="portal-login-form">
+        <div class="form-group">
+          <label for="portal-email" class="form-label">Email</label>
+          <input type="email" id="portal-email" class="form-control" required autocomplete="email">
+        </div>
+        <div class="form-group" style="margin-top:16px;">
+          <label for="portal-password" class="form-label">Password</label>
+          <input type="password" id="portal-password" class="form-control" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:24px;">Sign In</button>
+        <button type="button" class="portal-login__forgot" id="portal-forgot">Forgot password?</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="portal-dashboard-view" hidden>
+    <div class="scroll-progress"></div>
+    <header class="site-header">
+      <div class="container nav-container">
+        <a href="/index.html" class="logo">
+          <span class="logo__primary">Zurruq</span>
+          <span class="logo__secondary">Origins</span>
+        </a>
+        <nav class="nav-links" aria-label="Main Navigation">
+          <div class="nav-item-dropdown">
+            <button class="nav-link dropdown-trigger" aria-expanded="false" aria-haspopup="menu" aria-controls="products-dropdown">
+              Products <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="dropdown-menu" id="products-dropdown" role="menu" aria-label="Products">
+              <a href="/cocoa.html" class="dropdown-card" role="menuitem">
+                <h4>Ghana Natural Cocoa</h4>
+                <p>Non-alkalized, 10-12% fat, food-grade.</p>
+              </a>
+              <a href="/coffee.html" class="dropdown-card" role="menuitem">
+                <h4>Ghana Single-Origin Coffee</h4>
+                <p>Green & roasted. Washed & natural.</p>
+              </a>
+            </div>
+          </div>
+          <a href="/sourcing.html" class="nav-link">Sourcing</a>
+          <a href="/about.html" class="nav-link">About</a>
+          <a href="/wholesale.html" class="nav-link">Wholesale</a>
+          <a href="/contact.html" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
+          <a href="/portal.html" class="btn btn--portal">Client Portal</a>
+          <button type="button" class="btn-signout" id="portal-sign-out">Sign out</button>
+        </div>
+        <div class="mobile-actions">
+          <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
+          <a href="/portal.html" class="btn btn--portal mobile-only-btn">Client Portal</a>
+          <button type="button" class="btn-signout mobile-only-btn" id="portal-sign-out-mobile">Sign out</button>
+          <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/cocoa.html" class="nav-link">Cocoa Powder</a>
+      <a href="/coffee.html" class="nav-link">Single-Origin Coffee</a>
+      <a href="/sourcing.html" class="nav-link">Sourcing</a>
+      <a href="/about.html" class="nav-link">About</a>
+      <a href="/wholesale.html" class="nav-link">Wholesale</a>
+      <a href="/contact.html" class="nav-link">Contact</a>
+      <div class="nav-actions-mobile">
+        <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
+        <a href="/portal.html" class="btn btn--portal" style="width: 100%; text-align: center; margin-bottom: 12px;">Client Portal</a>
+        <button type="button" class="btn-signout" id="portal-sign-out-menu" style="width:100%;">Sign out</button>
+      </div>
+    </div>
+
+    <main class="portal-dash-main">
+      <div class="container">
+        <p class="portal-dash__welcome" id="portal-welcome">Welcome back</p>
+        <div class="portal-dash__grid">
+          <section class="portal-card" aria-labelledby="portal-orders-heading">
+            <h2 id="portal-orders-heading">My Orders</h2>
+            <div id="portal-orders-content"></div>
+          </section>
+          <section class="portal-card" aria-labelledby="portal-docs-heading">
+            <h2 id="portal-docs-heading">QA Documents</h2>
+            <div id="portal-docs-content"></div>
+          </section>
+          <section class="portal-card" aria-labelledby="portal-reorder-heading">
+            <h2 id="portal-reorder-heading">Request Reorder</h2>
+            <p class="portal-empty" style="margin-bottom:16px;">Need another delivery? Send us a reorder request and our team will confirm availability and pricing.</p>
+            <a class="btn btn-primary" id="portal-reorder-btn" href="mailto:info@zurruq.com?subject=Reorder%20Request%20%E2%80%94%20Zurruq%20Origins&amp;body=Please%20include%20your%20company%20name%2C%20product%2C%20and%20approximate%20quantity.">Email reorder request</a>
+          </section>
+          <section class="portal-card" aria-labelledby="portal-account-heading">
+            <h2 id="portal-account-heading">Account Details</h2>
+            <div id="portal-account-content"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <a href="/index.html" class="footer-logo">Zurruq Origins</a>
+            <p style="color:rgba(255,255,255,0.65); max-width:280px; font-size:14px;">West African excellence. Australian precision. Premium Ghana-origin cocoa and coffee imported directly to Melbourne.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Products</h4>
+            <ul class="footer-links">
+              <li><a href="/cocoa.html">Natural Cocoa Powder</a></li>
+              <li><a href="/coffee.html">Single-Origin Coffee</a></li>
+              <li><a href="/qa-pack.html">Request QA Pack</a></li>
+              <li><a href="/contact.html?type=sample">Request Sample</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul class="footer-links">
+              <li><a href="/about.html">About Us</a></li>
+              <li><a href="/sourcing.html">Sourcing</a></li>
+              <li><a href="/wholesale.html">Wholesale</a></li>
+              <li><a href="/logistics.html">Logistics & Freight</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <ul class="footer-links">
+              <li><a href="mailto:info@zurruq.com">info@zurruq.com</a></li>
+              <li><a href="tel:+61480242900">+61 480 242 900</a></li>
+              <li><span style="color:rgba(255,255,255,0.65); font-size:14px;">Tullamarine, VIC 3043<br>Australia</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Zurruq Origins Pty Ltd. All rights reserved.</p>
+          <div class="footer-badges">
+            <span>HACCP Compliant</span>
+            <span>COCOBOD Licensed</span>
+            <span>Melbourne Stocked</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7Kh5E1cZQXPki-ADuAh2RwRwIHxeo5D4",
+      authDomain: "zurruq-a0aed.firebaseapp.com",
+      projectId: "zurruq-a0aed",
+      storageBucket: "zurruq-a0aed.firebasestorage.app",
+      messagingSenderId: "822695656250",
+      appId: "1:822695656250:web:18cf9fccf73f3304e42e03",
+      measurementId: "G-BMD8DF3NMW"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginView = document.getElementById('portal-login-view');
+    const dashboardView = document.getElementById('portal-dashboard-view');
+    const loginError = document.getElementById('portal-login-error');
+    const loginForm = document.getElementById('portal-login-form');
+
+    function showLoginView() {
+      loginView.hidden = false;
+      dashboardView.hidden = true;
+      document.body.style.background = '#0A1628';
+    }
+
+    function showDashboardView() {
+      loginView.hidden = true;
+      dashboardView.hidden = false;
+      document.body.style.background = '';
+    }
+
+    function setLoginError(msg) {
+      if (!msg) {
+        loginError.textContent = '';
+        loginError.classList.remove('is-visible');
+        return;
+      }
+      loginError.textContent = msg;
+      loginError.classList.add('is-visible');
+    }
+
+    function formatDate(val) {
+      if (!val) return '—';
+      if (val.toDate) return val.toDate().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+      if (typeof val === 'string') return val;
+      return String(val);
+    }
+
+    function renderOrders(container, snap) {
+      if (snap.empty) {
+        container.innerHTML = '<p class="portal-empty">No orders yet. When you place an order with us, it will show up here with status and invoice links.</p>';
+        return;
+      }
+      const items = [];
+      snap.forEach(doc => {
+        const o = doc.data();
+        const inv = o.invoiceUrl
+          ? `<a class="portal-doc-link" href="${o.invoiceUrl}" target="_blank" rel="noopener">Invoice</a>`
+          : '';
+        items.push(`<li>
+          <strong>${o.product || 'Product'}</strong>
+          <div class="portal-list__meta">${formatDate(o.date)} · Qty: ${o.quantity != null ? o.quantity : '—'} · <span style="text-transform:capitalize;">${o.status || 'pending'}</span>${inv ? ' · ' + inv : ''}</div>
+        </li>`);
+      });
+      container.innerHTML = `<ul class="portal-list">${items.join('')}</ul>`;
+    }
+
+    function renderDocuments(container, snap) {
+      if (snap.empty) {
+        container.innerHTML = '<p class="portal-empty">No documents uploaded yet. COAs and certificates for your lots will appear here when they are ready.</p>';
+        return;
+      }
+      const items = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        const link = d.url
+          ? `<a class="portal-doc-link" href="${d.url}" target="_blank" rel="noopener">Download</a>`
+          : '';
+        items.push(`<li>
+          <strong>${d.name || 'Document'}</strong> <span style="color:var(--muted); font-size:12px;">(${d.type || 'file'})</span>
+          <div class="portal-list__meta">${formatDate(d.uploadedAt)} ${link ? '· ' + link : ''}</div>
+        </li>`);
+      });
+      container.innerHTML = `<ul class="portal-list">${items.join('')}</ul>`;
+    }
+
+    function renderAccount(container, data, fallbackEmail) {
+      if (!data || (!data.company && !data.email && !data.phone && !data.firstName)) {
+        container.innerHTML = '<p class="portal-empty">We don\'t have a full profile on file yet. Your account is active — contact <a href="mailto:info@zurruq.com" class="portal-doc-link">info@zurruq.com</a> to update company and contact details.</p>';
+        if (fallbackEmail) {
+          container.innerHTML += `<div class="portal-account-row" style="margin-top:12px;"><strong>Signed in as</strong> ${fallbackEmail}</div>`;
+        }
+        return;
+      }
+      const rows = [];
+      if (data.company) rows.push(`<div class="portal-account-row"><strong>Company</strong> ${data.company}</div>`);
+      if (data.email || fallbackEmail) rows.push(`<div class="portal-account-row"><strong>Email</strong> ${data.email || fallbackEmail}</div>`);
+      if (data.phone) rows.push(`<div class="portal-account-row"><strong>Phone</strong> ${data.phone}</div>`);
+      if (data.firstName || data.lastName) {
+        const name = [data.firstName, data.lastName].filter(Boolean).join(' ');
+        rows.push(`<div class="portal-account-row"><strong>Name</strong> ${name}</div>`);
+      }
+      container.innerHTML = rows.join('') || '<p class="portal-empty">No details to display.</p>';
+    }
+
+    async function loadDashboard(user) {
+      const uid = user.uid;
+      const welcomeEl = document.getElementById('portal-welcome');
+      const ordersEl = document.getElementById('portal-orders-content');
+      const docsEl = document.getElementById('portal-docs-content');
+      const accountEl = document.getElementById('portal-account-content');
+
+      ordersEl.innerHTML = '<p class="portal-empty">Loading…</p>';
+      docsEl.innerHTML = '<p class="portal-empty">Loading…</p>';
+      accountEl.innerHTML = '<p class="portal-empty">Loading…</p>';
+
+      let profile = null;
+      try {
+        const clientRef = db.collection('clients').doc(uid);
+        const clientSnap = await clientRef.get();
+        profile = clientSnap.exists ? clientSnap.data() : null;
+
+        const first = profile && profile.firstName ? profile.firstName : (user.email ? user.email.split('@')[0] : 'there');
+        welcomeEl.textContent = `Welcome back, ${first}`;
+
+        const [ordersSnap, docsSnap] = await Promise.all([
+          clientRef.collection('orders').get(),
+          clientRef.collection('documents').get()
+        ]);
+
+        renderOrders(ordersEl, ordersSnap);
+        renderDocuments(docsEl, docsSnap);
+        renderAccount(accountEl, profile, user.email);
+      } catch (e) {
+        console.error(e);
+        ordersEl.innerHTML = '<p class="portal-empty">Could not load orders. Check Firestore rules and your connection.</p>';
+        docsEl.innerHTML = '<p class="portal-empty">Could not load documents.</p>';
+        accountEl.innerHTML = '<p class="portal-empty">Could not load account details.</p>';
+        welcomeEl.textContent = 'Welcome back';
+      }
+    }
+
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      setLoginError('');
+      const email = document.getElementById('portal-email').value.trim();
+      const password = document.getElementById('portal-password').value;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        const code = err.code || '';
+        if (code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'auth/invalid-credential' || code === 'auth/invalid-login-credentials') {
+          setLoginError('Incorrect email or password. Please try again.');
+        } else if (code === 'auth/invalid-email') {
+          setLoginError('Please enter a valid email address.');
+        } else if (code === 'auth/too-many-requests') {
+          setLoginError('Too many attempts. Please wait and try again.');
+        } else {
+          setLoginError('Sign in failed. Please try again.');
+        }
+      }
+    });
+
+    document.getElementById('portal-forgot').addEventListener('click', async () => {
+      const email = document.getElementById('portal-email').value.trim();
+      if (!email) {
+        setLoginError('Enter your email above, then click Forgot password again.');
+        return;
+      }
+      setLoginError('');
+      try {
+        await auth.sendPasswordResetEmail(email);
+        alert('If an account exists for that email, we\'ve sent password reset instructions.');
+      } catch (err) {
+        setLoginError('Could not send reset email. Check the address and try again.');
+      }
+    });
+
+    function bindSignOut(btn) {
+      if (btn) btn.addEventListener('click', () => auth.signOut());
+    }
+    bindSignOut(document.getElementById('portal-sign-out'));
+    bindSignOut(document.getElementById('portal-sign-out-mobile'));
+    bindSignOut(document.getElementById('portal-sign-out-menu'));
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        showDashboardView();
+        loadDashboard(user);
+      } else {
+        showLoginView();
+        setLoginError('');
+      }
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
