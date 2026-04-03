@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Zarruq Origins</title>
+  <meta name="description" content="Get in touch with Zarruq Origins for quotes, samples, QA documentation, or general enquiries. Based in Melbourne, Australia.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <link rel="stylesheet" href="/styles/components.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+</head>
+<body style="background:var(--cream);">
+    <div class="scroll-progress"></div>
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/index.html" class="logo">
+        <span class="logo__primary">Zarruq</span>
+        <span class="logo__secondary">Origins</span>
+      </a>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <div class="nav-item-dropdown">
+          <button class="nav-link dropdown-trigger" aria-expanded="false" aria-haspopup="menu" aria-controls="products-dropdown">
+            Products <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-menu" id="products-dropdown" role="menu" aria-label="Products">
+            <a href="/cocoa.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Natural Cocoa</h4>
+              <p>Non-alkalized, 10-12% fat, food-grade.</p>
+            </a>
+            <a href="/coffee.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Single-Origin Coffee</h4>
+              <p>Green & roasted. Washed & natural.</p>
+            </a>
+          </div>
+        </div>
+        <a href="/sourcing.html" class="nav-link">Sourcing</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/wholesale.html" class="nav-link">Wholesale</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
+        <a href="#" class="btn btn--portal">Client Portal</a>
+      </div>
+      <div class="mobile-actions">
+        <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
+        <a href="#" class="btn btn--portal mobile-only-btn">Client Portal</a>
+        <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <a href="/index.html" class="nav-link">Home</a>
+    <a href="/cocoa.html" class="nav-link">Cocoa Powder</a>
+    <a href="/coffee.html" class="nav-link">Single-Origin Coffee</a>
+    <a href="/sourcing.html" class="nav-link">Sourcing</a>
+    <a href="/about.html" class="nav-link">About</a>
+    <a href="/wholesale.html" class="nav-link">Wholesale</a>
+    <a href="/contact.html" class="nav-link">Contact</a>
+    <div class="nav-actions-mobile">
+      <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
+      <a href="#" class="btn btn--portal" style="width: 100%; text-align: center;">Client Portal</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="section-pad" style="padding-top:160px; padding-bottom:100px;">
+      <div class="container">
+        <div class="grid-2" style="gap:64px;">
+          <div class="fade-up">
+            <span class="eyebrow">Get in Touch</span>
+            <h1 style="margin-bottom:24px;">We're here to help.</h1>
+            <p class="lead" style="margin-bottom:40px;">Whether you need a sample, a quote for a 10-tonne contract, or access to our compliance documentation, our Melbourne-based team is ready.</p>
+            
+            <div style="display:flex; flex-direction:column; gap:32px; margin-bottom:48px;">
+              <div>
+                <h4 style="margin-bottom:8px;">Email Us</h4>
+                <a href="mailto:hello@zarruqorigins.com.au" class="link-gold" style="font-size:18px; font-weight:500;">hello@zarruqorigins.com.au</a>
+              </div>
+              <div>
+                <h4 style="margin-bottom:8px;">Call Us</h4>
+                <a href="tel:+61300000000" class="link-gold" style="font-size:18px; font-weight:500;">+61 3 0000 0000</a>
+              </div>
+              <div>
+                <h4 style="margin-bottom:8px;">Warehouse & HQ</h4>
+                <p style="font-size:16px; color:var(--body);">Tullamarine, VIC 3043<br>Australia<br><span style="font-size:13px; color:var(--muted);">(Visits by appointment only)</span></p>
+              </div>
+            </div>
+
+            <div style="padding:24px; background:var(--white); border:0.5px solid var(--border); border-radius:var(--radius-md);">
+              <h4 style="margin-bottom:8px;">Our Promise</h4>
+              <p style="font-size:14px; margin:0;">We respond to all enquiries within 1 business day. For urgent supply chain matters, please call us directly.</p>
+            </div>
+          </div>
+
+          <div class="fade-up" style="background:var(--white); padding:40px; border:0.5px solid var(--border); border-radius:var(--radius-lg); box-shadow:0 10px 40px rgba(0,0,0,0.04);">
+            <form id="contact-form" novalidate>
+              <div class="form-group">
+                <label for="enquiry-type" class="form-label">How can we help?</label>
+                <select id="enquiry-type" class="form-control" required>
+                  <option value="general">General Enquiry</option>
+                  <option value="sample">Request Sample</option>
+                  <option value="quote">Request Quote</option>
+                  <option value="qa">QA Pack Access</option>
+                </select>
+              </div>
+
+              <div class="grid-2" style="gap:16px;">
+                <div class="form-group">
+                  <label for="contact-name" class="form-label">Full Name</label>
+                  <input type="text" id="contact-name" class="form-control" required>
+                  <div class="form-error">This field is required.</div>
+                </div>
+                <div class="form-group">
+                  <label for="contact-company" class="form-label">Company Name</label>
+                  <input type="text" id="contact-company" class="form-control" required>
+                  <div class="form-error">This field is required.</div>
+                </div>
+              </div>
+
+              <div class="grid-2" style="gap:16px;">
+                <div class="form-group">
+                  <label for="contact-email" class="form-label">Business Email</label>
+                  <input type="email" id="contact-email" class="form-control" required>
+                  <div class="form-error">Please enter a valid email.</div>
+                </div>
+                <div class="form-group">
+                  <label for="contact-phone" class="form-label">Phone Number</label>
+                  <input type="tel" id="contact-phone" class="form-control" required>
+                  <div class="form-error">This field is required.</div>
+                </div>
+              </div>
+
+              <!-- Conditional Fields: Quote -->
+              <div id="quote-fields" style="display:none;">
+                <div class="grid-2" style="gap:16px;">
+                  <div class="form-group">
+                    <label for="quote-product" class="form-label">Product</label>
+                    <select id="quote-product" class="form-control">
+                      <option value="">Select...</option>
+                      <option value="cocoa">Ghana Natural Cocoa Powder</option>
+                      <option value="coffee-green">Ghana Green Coffee Beans</option>
+                      <option value="coffee-roasted">Ghana Roasted Coffee</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="quote-volume" class="form-label">Estimated Volume (kg)</label>
+                    <input type="number" id="quote-volume" class="form-control">
+                  </div>
+                </div>
+                <div class="grid-2" style="gap:16px;">
+                  <div class="form-group">
+                    <label for="quote-frequency" class="form-label">Order Frequency</label>
+                    <select id="quote-frequency" class="form-control">
+                      <option value="">Select...</option>
+                      <option value="one-off">One-off purchase</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="annual">Annual Contract</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="quote-state" class="form-label">Delivery State</label>
+                    <select id="quote-state" class="form-control">
+                      <option value="">Select...</option>
+                      <option value="VIC">VIC</option>
+                      <option value="NSW">NSW</option>
+                      <option value="QLD">QLD</option>
+                      <option value="SA">SA</option>
+                      <option value="WA">WA</option>
+                      <option value="TAS">TAS</option>
+                      <option value="ACT">ACT</option>
+                      <option value="NT">NT</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conditional Fields: Sample -->
+              <div id="sample-fields" style="display:none;">
+                <div class="form-group">
+                  <label for="sample-product" class="form-label">Which product?</label>
+                  <select id="sample-product" class="form-control">
+                    <option value="">Select...</option>
+                    <option value="cocoa">Ghana Natural Cocoa Powder</option>
+                    <option value="coffee-green">Ghana Green Coffee Beans</option>
+                    <option value="coffee-roasted">Ghana Roasted Coffee</option>
+                    <option value="both">Both</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="sample-address" class="form-label">Delivery Address</label>
+                  <input type="text" id="sample-address" class="form-control">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-message" class="form-label">Message</label>
+                <textarea id="contact-message" class="form-control" required></textarea>
+                <div class="form-error">Please provide some details.</div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Send Enquiry <span class="arrow">→</span></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Placeholder -->
+    <section class="fade-up" style="height:400px; background:#e5e3df; display:flex; align-items:center; justify-content:center; border-top:0.5px solid var(--border);">
+      <div style="text-align:center; color:var(--muted);">
+        <div style="font-size:32px; margin-bottom:12px;">📍</div>
+        <p style="font-family:var(--font-body); font-weight:600; text-transform:uppercase; letter-spacing:0.1em;">Google Maps Embed Placeholder</p>
+        <p style="font-size:14px;">Tullamarine, VIC 3043</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="/index.html" class="footer-logo">Zarruq Origins</a>
+          <p style="color:rgba(255,255,255,0.65); max-width:280px; font-size:14px;">West African excellence. Australian precision. Premium Ghana-origin cocoa and coffee imported directly to Melbourne.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul class="footer-links">
+            <li><a href="/cocoa.html">Natural Cocoa Powder</a></li>
+            <li><a href="/coffee.html">Single-Origin Coffee</a></li>
+            <li><a href="/qa-pack.html">Request QA Pack</a></li>
+            <li><a href="/contact.html?type=sample">Request Sample</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/sourcing.html">Sourcing</a></li>
+            <li><a href="/wholesale.html">Wholesale</a></li>
+            <li><a href="/logistics.html">Logistics & Freight</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@zarruqorigins.com.au">hello@zarruqorigins.com.au</a></li>
+            <li><a href="tel:+61300000000">+61 3 0000 0000</a></li>
+            <li><span style="color:rgba(255,255,255,0.65); font-size:14px;">Tullamarine, VIC 3043<br>Australia</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Zarruq Origins Pty Ltd. All rights reserved. ABN: 12 345 678 901</p>
+        <div class="footer-badges">
+          <span>HACCP Compliant</span>
+          <span>COCOBOD Licensed</span>
+          <span>Melbourne Stocked</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="/js/main.js"></script>
+</body>
+</html>
