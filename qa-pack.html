@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Pack Portal | Zurruq Origins</title>
+  <meta name="description" content="Download comprehensive QA documentation for Zurruq Origins cocoa and coffee, including COAs, specifications, and allergen declarations.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <link rel="stylesheet" href="/styles/components.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+</head>
+<body style="background:var(--cream);">
+    <div class="scroll-progress"></div>
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/index.html" class="logo">
+        <span class="logo__primary">Zurruq</span>
+        <span class="logo__secondary">Origins</span>
+      </a>
+      <nav class="nav-links" aria-label="Main Navigation">
+        <div class="nav-item-dropdown">
+          <button class="nav-link dropdown-trigger" aria-expanded="false" aria-haspopup="menu" aria-controls="products-dropdown">
+            Products <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="dropdown-menu" id="products-dropdown" role="menu" aria-label="Products">
+            <a href="/cocoa.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Natural Cocoa</h4>
+              <p>Non-alkalized, 10-12% fat, food-grade.</p>
+            </a>
+            <a href="/coffee.html" class="dropdown-card" role="menuitem">
+              <h4>Ghana Single-Origin Coffee</h4>
+              <p>Green & roasted. Washed & natural.</p>
+            </a>
+          </div>
+        </div>
+        <a href="/sourcing.html" class="nav-link">Sourcing</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/wholesale.html" class="nav-link">Wholesale</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
+        <a href="#" class="btn btn--portal">Client Portal</a>
+      </div>
+      <div class="mobile-actions">
+        <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
+        <a href="#" class="btn btn--portal mobile-only-btn">Client Portal</a>
+        <button class="mobile-toggle" aria-label="Toggle Menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <a href="/index.html" class="nav-link">Home</a>
+    <a href="/cocoa.html" class="nav-link">Cocoa Powder</a>
+    <a href="/coffee.html" class="nav-link">Single-Origin Coffee</a>
+    <a href="/sourcing.html" class="nav-link">Sourcing</a>
+    <a href="/about.html" class="nav-link">About</a>
+    <a href="/wholesale.html" class="nav-link">Wholesale</a>
+    <a href="/contact.html" class="nav-link">Contact</a>
+    <div class="nav-actions-mobile">
+      <a href="/qa-pack.html" class="btn btn--qa" style="width: 100%; text-align: center; margin-bottom: 12px;">QA Pack Access</a>
+      <a href="#" class="btn btn--portal" style="width: 100%; text-align: center;">Client Portal</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Section 7.1 — Page header -->
+    <section class="section-pad" style="padding-top:160px; padding-bottom:60px; text-align:center;">
+      <div class="container fade-up">
+        <span class="eyebrow">Compliance Portal</span>
+        <h1>Evaluate Before You Buy</h1>
+        <p class="lead" style="max-width:600px; margin:20px auto 0;">Every document your procurement team needs — unlocked instantly with your business email.</p>
+      </div>
+    </section>
+
+    <!-- Section 7.2 — Email gate form -->
+    <section class="section-pad-sm">
+      <div class="container">
+        <div class="fade-up" style="max-width:700px; margin:0 auto; background:var(--white); padding:40px; border:0.5px solid var(--border); border-radius:var(--radius-lg); box-shadow:0 10px 40px rgba(0,0,0,0.04);">
+          <form id="qa-form" novalidate>
+            <div class="grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label for="qa-name" class="form-label">Full Name</label>
+                <input type="text" id="qa-name" class="form-control" required>
+                <div class="form-error">This field is required.</div>
+              </div>
+              <div class="form-group">
+                <label for="qa-email" class="form-label">Business Email</label>
+                <input type="email" id="qa-email" class="form-control" required>
+                <div class="form-error">Please enter a valid business email.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="qa-company" class="form-label">Company Name</label>
+              <input type="text" id="qa-company" class="form-control" required>
+              <div class="form-error">This field is required.</div>
+            </div>
+            <div class="grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label for="qa-type" class="form-label">Business Type</label>
+                <select id="qa-type" class="form-control" required>
+                  <option value="">Select...</option>
+                  <option value="manufacturer">Food Manufacturer</option>
+                  <option value="distributor">Distributor / Wholesaler</option>
+                  <option value="bakery">Bakery Group</option>
+                  <option value="cafe">Café / Roaster</option>
+                </select>
+                <div class="form-error">Please select an option.</div>
+              </div>
+              <div class="form-group">
+                <label for="qa-volume" class="form-label">Volume Requirement</label>
+                <select id="qa-volume" class="form-control" required>
+                  <option value="">Select...</option>
+                  <option value="small">Under 100kg / month</option>
+                  <option value="medium">100kg - 500kg / month</option>
+                  <option value="large">500kg - 2000kg / month</option>
+                  <option value="enterprise">2000kg+ / month</option>
+                </select>
+                <div class="form-error">Please select an option.</div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:16px;">Unlock Documents <span class="arrow">→</span></button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7.3 — Document list -->
+    <section class="section-pad">
+      <div class="container">
+        <div class="fade-up" style="max-width:900px; margin:0 auto;">
+          <h3 style="margin-bottom:32px;">Available Documents</h3>
+          
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">📄</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Sample Certificate of Analysis</h4>
+                <p style="font-size:13px; margin:0;">Complete COA for a recent reference lot of Ghana Natural Cocoa Powder.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: DOC-COA-001</span>
+                  <span>Updated: Oct 2025</span>
+                  <span>PDF (1.2 MB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">📊</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Cocoa Product Specification Sheet</h4>
+                <p style="font-size:13px; margin:0;">Detailed physical, chemical, and microbiological parameters.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: SPEC-COC-002</span>
+                  <span>Updated: Nov 2025</span>
+                  <span>PDF (800 KB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">📊</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Coffee Product Specification Sheet</h4>
+                <p style="font-size:13px; margin:0;">Origin details, processing methods, and grading standards.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: SPEC-COF-003</span>
+                  <span>Updated: Nov 2025</span>
+                  <span>PDF (850 KB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">🤝</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Commercial Terms of Supply</h4>
+                <p style="font-size:13px; margin:0;">Standard wholesale terms, payment conditions, and delivery SLAs.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: LEG-CTS-004</span>
+                  <span>Updated: Jan 2026</span>
+                  <span>PDF (400 KB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">📦</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Storage & Handling Guidelines</h4>
+                <p style="font-size:13px; margin:0;">Recommended conditions to preserve product integrity and shelf life.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: GUI-SHG-005</span>
+                  <span>Updated: Sep 2025</span>
+                  <span>PDF (600 KB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+          <div class="qa-doc-row locked fade-up">
+            <div class="qa-doc-info">
+              <div class="qa-doc-icon">⚠️</div>
+              <div>
+                <h4 style="margin-bottom:4px; font-size:15px; text-transform:none; letter-spacing:0;">Allergen Declaration</h4>
+                <p style="font-size:13px; margin:0;">Official statement regarding allergens present in our facilities and products.</p>
+                <div class="qa-doc-meta">
+                  <span>ID: DEC-ALL-006</span>
+                  <span>Updated: Jan 2026</span>
+                  <span>PDF (350 KB)</span>
+                </div>
+              </div>
+            </div>
+            <div class="qa-doc-action">
+              <button class="btn btn-secondary">Locked 🔒</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="/index.html" class="footer-logo">Zurruq Origins</a>
+          <p style="color:rgba(255,255,255,0.65); max-width:280px; font-size:14px;">West African excellence. Australian precision. Premium Ghana-origin cocoa and coffee imported directly to Melbourne.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul class="footer-links">
+            <li><a href="/cocoa.html">Natural Cocoa Powder</a></li>
+            <li><a href="/coffee.html">Single-Origin Coffee</a></li>
+            <li><a href="/qa-pack.html">Request QA Pack</a></li>
+            <li><a href="/contact.html?type=sample">Request Sample</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="/about.html">About Us</a></li>
+            <li><a href="/sourcing.html">Sourcing</a></li>
+            <li><a href="/wholesale.html">Wholesale</a></li>
+            <li><a href="/logistics.html">Logistics & Freight</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:info@zurruq.com">info@zurruq.com</a></li>
+            <li><a href="tel:+61300000000">+61 3 0000 0000</a></li>
+            <li><span style="color:rgba(255,255,255,0.65); font-size:14px;">Tullamarine, VIC 3043<br>Australia</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Zurruq Origins Pty Ltd. All rights reserved. ABN: 12 345 678 901</p>
+        <div class="footer-badges">
+          <span>HACCP Compliant</span>
+          <span>COCOBOD Licensed</span>
+          <span>Melbourne Stocked</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="/js/main.js"></script>
+</body>
+</html>
