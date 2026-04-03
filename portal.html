@@ -35,9 +35,44 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
+      padding: 48px 24px 56px;
+      box-sizing: border-box;
       background: transparent;
+    }
+    .portal-login__brand {
+      width: 100%;
+      text-align: center;
+      flex-shrink: 0;
+      margin-bottom: 28px;
+    }
+    .portal-login__brand .logo {
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.1;
+      text-decoration: none;
+      align-items: center;
+    }
+    .portal-login__brand .logo__primary {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .portal-login__brand .logo__secondary {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.88);
+    }
+    .portal-login__center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 0;
+      padding-bottom: 32px;
     }
     .portal-login__card {
       width: 100%;
@@ -47,13 +82,6 @@
       padding: 40px 36px;
       border: 0.5px solid var(--border);
       box-shadow: 0 24px 80px rgba(0,0,0,0.35);
-    }
-    .portal-login__logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .portal-login__logo a {
-      text-decoration: none;
     }
     .portal-login__title {
       font-family: var(--font-heading);
@@ -101,9 +129,10 @@
       text-align: center;
       margin-top: 24px;
       font-size: 14px;
-      color: var(--navy);
+      color: rgba(255, 255, 255, 0.85);
       text-decoration: none;
       font-family: var(--font-body);
+      flex-shrink: 0;
     }
     .portal-login__back:hover { color: var(--gold); }
     .portal-reset-panel {
@@ -172,34 +201,49 @@
     .portal-doc-link:hover { text-decoration: underline; }
     .portal-account-row { margin-bottom: 10px; font-size: 14px; }
     .portal-account-row strong { color: var(--navy); display: inline-block; min-width: 120px; }
-    .btn-signout {
+    /* Dashboard nav: match components.css .nav-container */
+    #portal-dash .site-header .nav-container {
+      display: flex;
+      align-items: center;
+      height: 80px;
+      transition: all 0.3s ease;
+    }
+    #portal-dash .site-header .logo {
+      margin-right: 48px;
+    }
+    #portal-dash #signout-btn {
       font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0 20px;
-      height: 44px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: normal;
+      text-transform: none;
+      padding: 8px 16px;
+      height: auto;
+      line-height: 1.3;
+      border: 0.5px solid var(--border);
       border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--white);
-      color: var(--navy);
+      background: transparent;
+      color: var(--nav-text);
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
+      margin-left: 8px;
     }
-    .btn-signout:hover { border-color: var(--gold); color: var(--gold); }
-    .nav-actions .btn-signout { margin-left: 8px; }
+    #portal-dash #signout-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
   </style>
 </head>
 <body class="portal-page portal-login-active">
   <div id="portal-login" class="portal-login" role="main" style="display:none;">
+    <div class="portal-login__brand">
+      <a href="/index.html" class="logo" aria-label="Zurruq Origins home">
+        <span class="logo__primary">Zurruq</span>
+        <span class="logo__secondary">Origins</span>
+      </a>
+    </div>
+    <div class="portal-login__center">
     <div class="portal-login__card">
-      <div class="portal-login__logo">
-        <a href="/index.html" class="logo" aria-label="Zurruq Origins home">
-          <span class="logo__primary">Zurruq</span>
-          <span class="logo__secondary">Origins</span>
-        </a>
-      </div>
       <h1 class="portal-login__title">Client Portal</h1>
       <p class="portal-login__sub">Sign in to access your orders and documents</p>
       <div id="portal-login-error" class="portal-login__error" role="alert"></div>
@@ -221,7 +265,8 @@
           <div id="portal-reset-msg" class="portal-reset-msg" role="status" aria-live="polite"></div>
         </div>
       </form>
-      <a href="/index.html" class="portal-login__back">← Back to Website</a>
+    </div>
+    <a href="/index.html" class="portal-login__back">← Back to Website</a>
     </div>
   </div>
 
@@ -257,7 +302,7 @@
       <div class="nav-actions">
         <a href="/qa-pack.html" class="btn btn--qa">QA Pack Access</a>
         <a href="/portal.html" class="btn btn--portal portal-nav-cta">Client Portal</a>
-        <button type="button" class="btn-signout" id="signout-btn" style="display:none;">Sign Out</button>
+        <button type="button" id="signout-btn" style="display:none;">Sign Out</button>
       </div>
       <div class="mobile-actions">
         <a href="/cocoa.html" class="nav-link mobile-only-link">Products</a>
