@@ -1,3 +1,56 @@
+/**
+ * Firestore backup for public enquiry forms (contact + wholesale).
+ * Collection: `enquiries` — ensure Firestore rules allow create from unauthenticated clients, e.g.:
+ * match /enquiries/{id} { allow create: if true; allow read: if false; }
+ */
+function getPublicFirestoreDb() {
+  if (typeof firebase === 'undefined' || !window.__ZURRUQ_FIREBASE_CONFIG) {
+    return null;
+  }
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(window.__ZURRUQ_FIREBASE_CONFIG);
+    }
+    return firebase.firestore();
+  } catch (err) {
+    console.error('[Zurruq] Firebase initializeApp failed:', err);
+    return null;
+  }
+}
+
+function buildFirestoreEnquiryPayload(formData) {
+  const payload = {};
+  formData.forEach((value, key) => {
+    if (key.startsWith('_')) return;
+    const prev = payload[key];
+    if (prev === undefined) payload[key] = value;
+    else if (value != null && String(value).trim() !== '') payload[key] = value;
+  });
+  return payload;
+}
+
+async function saveEnquiryToFirestore(formData) {
+  const db = getPublicFirestoreDb();
+  if (!db) {
+    console.warn(
+      '[Zurruq] Firestore skipped: add firebase-app-compat, firestore-compat, and firebase-public-config.js before main.js.'
+    );
+    return;
+  }
+  const data = buildFirestoreEnquiryPayload(formData);
+  try {
+    await db.collection('enquiries').add({
+      ...data,
+      submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      sourcePage: typeof window !== 'undefined' ? window.location.pathname : '',
+    });
+    console.log('[Zurruq] Enquiry written to Firestore collection "enquiries".');
+  } catch (err) {
+    console.error('[Zurruq] Firestore write failed:', err.code || err.name, err.message, err);
+    throw err;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const mobileToggle = document.querySelector('.mobile-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
@@ -120,24 +173,36 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       if (!validateForm(contactForm)) return;
       const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const submitLabelWholesale = submitBtn ? submitBtn.textContent.trim() : '';
       submitBtn.textContent = 'Sending...';
       submitBtn.disabled = true;
       const formData = new FormData(contactForm);
       try {
+        const firestoreTask = saveEnquiryToFirestore(formData).catch((err) => {
+          console.error('[Zurruq] Enquiry Firestore backup failed (email may still send):', err);
+        });
         const response = await fetch('https://formspree.io/f/xbdpzrgo', {
           method: 'POST',
           body: formData,
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Accept': 'application/json' },
         });
+        await firestoreTask;
         if (response.ok) {
           window.location.href = '/thankyou.html';
         } else {
-          submitBtn.textContent = 'Send Enquiry →';
+          const errBody = await response.text().catch(() => '');
+          console.error('[Zurruq] Formspree error:', response.status, errBody);
+          submitBtn.textContent = submitLabelWholesale.includes('Sample')
+            ? submitLabelWholesale
+            : 'Send Enquiry →';
           submitBtn.disabled = false;
           alert('Something went wrong. Please try again.');
         }
       } catch (error) {
-        submitBtn.textContent = 'Send Enquiry →';
+        console.error('[Zurruq] Contact form submit error:', error);
+        submitBtn.textContent = submitLabelWholesale.includes('Sample')
+          ? submitLabelWholesale
+          : 'Send Enquiry →';
         submitBtn.disabled = false;
         alert('Something went wrong. Please try again.');
       }
