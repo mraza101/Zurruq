@@ -2,11 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileToggle = document.querySelector('.mobile-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
   if (mobileToggle && mobileMenu) {
+    let scrim = document.getElementById('mobile-menu-scrim');
+    if (!scrim) {
+      scrim = document.createElement('div');
+      scrim.id = 'mobile-menu-scrim';
+      scrim.className = 'mobile-menu-scrim';
+      scrim.setAttribute('aria-hidden', 'true');
+      mobileMenu.parentNode.insertBefore(scrim, mobileMenu);
+    }
     const toggleMenu = (force) => {
-      const isOpen = mobileToggle.classList.toggle('open', force);
-      mobileMenu.classList.toggle('open', force);
+      const currentlyOpen = mobileMenu.classList.contains('open');
+      const isOpen = typeof force === 'boolean' ? force : !currentlyOpen;
+      mobileToggle.classList.toggle('open', isOpen);
+      mobileMenu.classList.toggle('open', isOpen);
+      scrim.classList.toggle('is-open', isOpen);
       mobileToggle.setAttribute('aria-expanded', isOpen);
       mobileMenu.setAttribute('aria-hidden', !isOpen);
+      scrim.setAttribute('aria-hidden', !isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
       if (isOpen) {
         const firstLink = mobileMenu.querySelector('a');
@@ -14,6 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     mobileToggle.addEventListener('click', () => toggleMenu());
+    scrim.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('open')) {
+        toggleMenu(false);
+        mobileToggle.focus();
+      }
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
         toggleMenu(false);
@@ -24,9 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const header = document.querySelector('.site-header');
   if (header) {
-    window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 50);
-    });
+    const syncHeaderScrolled = () => {
+      header.classList.toggle('scrolled', window.scrollY > 60);
+    };
+    syncHeaderScrolled();
+    window.addEventListener('scroll', syncHeaderScrolled);
   }
 
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
