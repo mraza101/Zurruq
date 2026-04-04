@@ -22,3 +22,18 @@
 .mobile-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .mobile-toggle.open span:nth-child(2) { opacity: 0; }
 .mobile-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@keyframes kenBurns {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+@keyframes chainGrow {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes chainGrowY {
+  from { height: 0%; }
+  to   { height: 100%; }
+}

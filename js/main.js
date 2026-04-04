@@ -155,6 +155,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
   fadeElements.forEach(el => fadeObserver.observe(el));
 
+  const chainLines = document.querySelectorAll('.chain-line-fill');
+  if (chainLines.length) {
+    const lineObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('animated');
+          }, i * 180);
+          lineObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    chainLines.forEach((line) => lineObserver.observe(line));
+  }
+
   const dropdowns = document.querySelectorAll('.nav-item-dropdown');
   dropdowns.forEach(dropdown => {
     const trigger = dropdown.querySelector('.dropdown-trigger');
